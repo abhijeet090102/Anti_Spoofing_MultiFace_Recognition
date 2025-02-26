@@ -1,0 +1,20 @@
+{% extends "accounts/Layout.html" %}
+{% block title %}
+Attendence Data
+{% endblock %}
+
+{% block content %}
+    <section>
+        <h2>Attendence Data Display</h2>
+        {% for record in attendence %}
+            <article>
+                <h3>{{ record.name }}</h3>
+                <p>{{ record.user_id }}</p>
+                <p>{{ record.date }}</p>
+                <p>{{ record.in_time }}</p>
+                <p>{{ record.out_time }}</p>
+                <p>{{ record.status }}</p>
+            </article>
+        {% endfor %}
+    </section>
+{% endblock %}

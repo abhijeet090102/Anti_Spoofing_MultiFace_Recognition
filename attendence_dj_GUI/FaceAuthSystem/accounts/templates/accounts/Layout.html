@@ -1,0 +1,41 @@
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+            Django App
+        {% endblock %}
+    </title>
+    <link rel="stylesheet" href="{% static 'css/stylesheet.css' %}">
+
+</head>
+
+<body>
+    <nav> 
+        <a href="/">
+            <span role="img" aria-label="Login">🔐</span>
+            <h3>Login</h3>
+        </a> | 
+        <a href="/register">
+            <span role="img" aria-label="Register">📚</span>
+            <h3>Register</h3>
+        </a> | 
+        <a href="/admin_dashboard">
+            <span role="img" aria-label="admin_dashboard">📰</span>
+            <h3>Attendence Data</h3>
+        </a> |
+        <a href="/register_data">
+            <span role="img" aria-label="Register_data">📖</span>
+            <h3>Register Data</h3>
+        </a>
+
+    </nav>
+    <main>
+        {% block content %}
+
+        {% endblock %}
+    </main>
+</body>
+</html>

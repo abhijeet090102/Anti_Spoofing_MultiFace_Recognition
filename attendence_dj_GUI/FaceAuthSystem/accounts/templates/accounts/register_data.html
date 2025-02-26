@@ -1,0 +1,19 @@
+{% extends "accounts/Layout.html" %}
+{% block title %}
+{% load static %}
+Register Data
+{% endblock %}
+
+{% block content %}
+    <section>
+        <h2>Register Data Display</h2>
+        {% for user in users %}
+            <article>
+                <h2>{{ user.name }}</h2>
+                <p>{{ user.user_id }}</p>
+                <img src="{% static 'images/' %}{{ user.photo }}" alt="" style="width: 150px; height: auto;">
+                <p>{{ user.date }}</p>
+            </article>
+        {% endfor %}
+    </section>
+{% endblock %}

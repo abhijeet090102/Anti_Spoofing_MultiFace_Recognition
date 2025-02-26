@@ -1,0 +1,115 @@
+{% extends "accounts/Layout.html" %}
+{% block  content %}
+    <h1>Real-Time Attendance Verification</h1>
+    {% comment %} <canvas id="canvas"></canvas> {% endcomment %}
+    <button id="start-camera">Start Camera</button>
+    <img id="video-feed" src="" alt="Real-Time Video Feed">
+    {% comment %} <video id="video-feed" width="640" height="480" autoplay></video> {% endcomment %}
+    <button id="stopButton">Stop</button>
+    
+    <script>
+        const startButton = document.getElementById('start-camera');
+        const videoFeed = document.getElementById('video-feed');
+
+        startButton.addEventListener('click', () => {
+            // Display the video feed when the button is clicked
+            videoFeed.style.display = 'block';
+            videoFeed.src = '/video_feed/';
+        });
+        
+        document.getElementById("stopButton").addEventListener("click", function () {
+            fetch('/stop_video/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        location.reload();
+                        // Hide the video feed if the server confirms stopping
+                        document.getElementById('video-feed').style.display = 'none';
+                        
+                    } else {
+                        alert('Error stopping the video feed');
+                    }
+                });
+        });
+
+    </script> 
+    {% comment %} <script>
+        const startButton = document.getElementById('start-camera');
+        const stopButton = document.getElementById('stopButton');
+        const videoElement = document.getElementById('video-feed');
+        let mediaStream = null;
+        let socket = null;
+
+        // Start camera function
+        startButton.addEventListener('click', async () => {
+            try {
+                // Request access to the user's webcam
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                videoElement.srcObject = mediaStream;
+                
+                // Initialize WebSocket connection
+                socket = new WebSocket('ws://127.0.0.1:8000/ws/face-auth/');
+                
+                socket.onopen = () => {
+                    console.log('WebSocket connection established');
+                };
+
+                socket.onmessage = (event) => {
+                    const data = JSON.parse(event.data);
+                    console.log(data); // Handle server responses here
+                };
+
+                socket.onerror = (error) => {
+                    console.log('WebSocket Error:', error);
+                };
+                
+                socket.onclose = () => {
+                    console.log('WebSocket connection closed');
+                };
+            } catch (err) {
+                console.log('Error accessing camera:', err);
+            }
+        });
+
+        // Stop camera function
+        stopButton.addEventListener('click', () => {
+            if (mediaStream) {
+                // Stop all video tracks
+                mediaStream.getTracks().forEach(track => track.stop());
+                videoElement.srcObject = null;
+            }
+            if (socket) {
+                socket.close();
+            }
+        });
+
+        // Capture and send frames every 100ms (10 FPS)
+        function sendFrame() {
+            if (mediaStream && socket && socket.readyState === WebSocket.OPEN) {
+                // Create a canvas element to capture the frame
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+
+                // Draw the current video frame on the canvas
+                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+                // Convert the frame to a base64-encoded string
+                const frameData = canvas.toDataURL('image/jpeg');
+
+                // Send the frame to the WebSocket server
+                socket.send(JSON.stringify({ command: 'frame', frame: frameData }));
+
+                // Call the sendFrame function again after 100ms
+                setTimeout(sendFrame, 100);
+            }
+        }
+
+        // Start sending frames once the camera is started
+        startButton.addEventListener('click', () => {
+            sendFrame(); // Start sending frames
+        });
+
+    </script> {% endcomment %}
+{% endblock  %}
